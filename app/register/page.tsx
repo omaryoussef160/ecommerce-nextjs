@@ -3,10 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Store } from 'lucide-react';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -36,85 +33,93 @@ export default function RegisterPage() {
       setError(data.error || 'Something went wrong');
       setLoading(false);
     } else {
-   console.log('Success! Redirecting...');
-  console.log(data);
-  window.location.href = '/login';
-}
+      window.location.href = '/login';
+    }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-2xl text-center">Create Account</CardTitle>
-          <CardDescription className="text-center">
-            Join us today
-          </CardDescription>
-        </CardHeader>
-        <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
+    <div className="min-h-[80vh] flex items-center justify-center">
+      <div className="w-full max-w-md">
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500 to-green-500 flex items-center justify-center mx-auto mb-4">
+            <Store className="h-6 w-6 text-white" />
+          </div>
+          <h1 className="text-3xl font-bold">Create account</h1>
+          <p className="text-gray-400 mt-2">Join us today</p>
+        </div>
+
+        <div className="glass-card rounded-2xl p-8">
+          <form onSubmit={handleSubmit} className="space-y-5">
             {error && (
-              <div className="bg-red-50 text-red-500 p-3 rounded-md text-sm">
+              <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl text-sm">
                 {error}
               </div>
             )}
+
             <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
-              <Input
-                id="name"
+              <label className="text-sm text-gray-400">Full Name</label>
+              <input
                 name="name"
                 type="text"
-                placeholder="John Doe"
+                placeholder="Your full name"
                 required
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500/50 transition-colors"
               />
             </div>
+
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
+              <label className="text-sm text-gray-400">Email</label>
+              <input
                 name="email"
                 type="email"
                 placeholder="you@example.com"
                 required
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500/50 transition-colors"
               />
             </div>
+
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
+              <label className="text-sm text-gray-400">Password</label>
+              <input
                 name="password"
                 type="password"
                 placeholder="••••••••"
                 required
                 minLength={6}
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500/50 transition-colors"
               />
             </div>
+
             <div className="space-y-2">
-              <Label htmlFor="role">Account Type</Label>
+              <label className="text-sm text-gray-400">Account Type</label>
               <select
-                id="role"
                 name="role"
-                className="w-full border border-gray-300 rounded-md p-2 text-sm"
                 defaultValue="customer"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500/50 transition-colors"
               >
-                <option value="customer">Customer</option>
-                <option value="seller">Seller</option>
+                <option value="customer" className="bg-gray-900">Customer</option>
+                <option value="seller" className="bg-gray-900">Seller</option>
               </select>
             </div>
-          </CardContent>
-          <CardFooter className="flex flex-col gap-4">
-            <Button type="submit" className="w-full" disabled={loading}>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 bg-gradient-to-r from-cyan-500 to-green-500 text-white rounded-xl font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
+            >
               {loading ? 'Creating account...' : 'Create Account'}
-            </Button>
-            <p className="text-sm text-center text-gray-600">
-              Already have an account?{' '}
-              <Link href="/login" className="text-blue-600 hover:underline">
-                Sign In
-              </Link>
-            </p>
-          </CardFooter>
-        </form>
-      </Card>
+            </button>
+          </form>
+
+          <p className="text-center text-sm text-gray-400 mt-6">
+            Already have an account?{' '}
+            <Link href="/login" className="text-cyan-400 hover:text-cyan-300 transition-colors">
+              Sign In
+            </Link>
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

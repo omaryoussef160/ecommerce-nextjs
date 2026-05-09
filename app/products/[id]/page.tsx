@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { Button } from '@/components/ui/button';
-import { ShoppingCart, Star } from 'lucide-react';
+import { ShoppingCart, Star, ArrowLeft, Package } from 'lucide-react';
+import Link from 'next/link';
 
 interface Product {
   _id: string;
@@ -66,11 +66,11 @@ export default function ProductPage() {
   if (loading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-gray-100 rounded-xl h-96 animate-pulse" />
+        <div className="bg-white/5 rounded-2xl h-96 animate-pulse" />
         <div className="space-y-4">
-          <div className="bg-gray-100 h-8 rounded animate-pulse" />
-          <div className="bg-gray-100 h-4 rounded animate-pulse" />
-          <div className="bg-gray-100 h-4 rounded animate-pulse w-1/2" />
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="bg-white/5 h-8 rounded-xl animate-pulse" />
+          ))}
         </div>
       </div>
     );
@@ -78,101 +78,120 @@ export default function ProductPage() {
 
   if (!product) {
     return (
-      <div className="text-center py-20">
-        <p className="text-xl text-gray-500">Product not found</p>
-        <Button className="mt-4" onClick={() => router.push('/products')}>
+      <div className="text-center py-24">
+        <Package className="h-16 w-16 mx-auto mb-4 text-gray-600" />
+        <p className="text-xl text-gray-400">Product not found</p>
+        <button
+          onClick={() => router.push('/products')}
+          className="mt-4 px-6 py-3 bg-gradient-to-r from-cyan-500 to-green-500 text-white rounded-xl font-medium"
+        >
           Back to Products
-        </Button>
+        </button>
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-      {/* Image */}
-      <div className="bg-gray-100 rounded-xl h-96 flex items-center justify-center overflow-hidden">
-        {product.images[0] ? (
-          <img
-            src={product.images[0]}
-            alt={product.name}
-            className="h-full w-full object-cover"
-          />
-        ) : (
-          <span className="text-8xl">🛍️</span>
-        )}
-      </div>
+    <div className="space-y-8">
+      <Link href="/products">
+        <button className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
+          <ArrowLeft className="h-4 w-4" />
+          Back to Products
+        </button>
+      </Link>
 
-      {/* Details */}
-      <div className="space-y-4">
-        <span className="text-sm text-blue-600 font-medium bg-blue-50 px-3 py-1 rounded-full">
-          {product.category}
-        </span>
-        <h1 className="text-3xl font-bold">{product.name}</h1>
-
-        {/* Rating */}
-        <div className="flex items-center gap-2">
-          <div className="flex">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                className={`h-4 w-4 ${
-                  i < Math.round(product.ratings.average)
-                    ? 'fill-yellow-400 text-yellow-400'
-                    : 'text-gray-300'
-                }`}
-              />
-            ))}
-          </div>
-          <span className="text-sm text-gray-500">({product.ratings.count} reviews)</span>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Image */}
+        <div className="bg-white/5 rounded-2xl h-96 flex items-center justify-center overflow-hidden border border-white/10">
+          {product.images[0] ? (
+            <img
+              src={product.images[0]}
+              alt={product.name}
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <span className="text-8xl">🛍️</span>
+          )}
         </div>
 
-        <p className="text-gray-600">{product.description}</p>
+        {/* Details */}
+        <div className="space-y-5">
+          <span className="text-sm text-cyan-400 font-medium bg-cyan-500/10 px-3 py-1 rounded-full">
+            {product.category}
+          </span>
 
-        <div className="text-3xl font-bold text-blue-600">${product.price}</div>
+          <h1 className="text-3xl font-bold">{product.name}</h1>
 
-        <p className="text-sm text-gray-500">
-          {product.stock > 0 ? (
-            <span className="text-green-600 font-medium">✓ In Stock ({product.stock} available)</span>
-          ) : (
-            <span className="text-red-500 font-medium">✗ Out of Stock</span>
-          )}
-        </p>
-
-        <p className="text-sm text-gray-500">
-          Sold by: <span className="font-medium">{product.seller?.name}</span>
-        </p>
-
-        {/* Quantity */}
-        {product.stock > 0 && (
-          <div className="flex items-center gap-3">
-            <span className="text-sm font-medium">Quantity:</span>
-            <div className="flex items-center border rounded-lg">
-              <button
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="px-3 py-1 hover:bg-gray-100"
-              >
-                -
-              </button>
-              <span className="px-4 py-1 border-x">{quantity}</span>
-              <button
-                onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
-                className="px-3 py-1 hover:bg-gray-100"
-              >
-                +
-              </button>
+          {/* Rating */}
+          <div className="flex items-center gap-2">
+            <div className="flex">
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  className={`h-4 w-4 ${
+                    i < Math.round(product.ratings.average)
+                      ? 'fill-yellow-400 text-yellow-400'
+                      : 'text-gray-600'
+                  }`}
+                />
+              ))}
             </div>
+            <span className="text-sm text-gray-400">({product.ratings.count} reviews)</span>
           </div>
-        )}
 
-        <Button
-          size="lg"
-          className="w-full"
-          onClick={addToCart}
-          disabled={product.stock === 0}
-        >
-          <ShoppingCart className="mr-2 h-5 w-5" />
-          {addedToCart ? '✓ Added to Cart!' : 'Add to Cart'}
-        </Button>
+          <p className="text-gray-400 leading-relaxed">{product.description}</p>
+
+          <div className="text-4xl font-bold text-cyan-400">${product.price}</div>
+
+          <div className="flex items-center gap-2">
+            {product.stock > 0 ? (
+              <span className="text-green-400 text-sm font-medium flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-green-400 inline-block" />
+                In Stock ({product.stock} available)
+              </span>
+            ) : (
+              <span className="text-red-400 text-sm font-medium flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-red-400 inline-block" />
+                Out of Stock
+              </span>
+            )}
+          </div>
+
+          <p className="text-sm text-gray-400">
+            Sold by <span className="text-white font-medium">{product.seller?.name}</span>
+          </p>
+
+          {/* Quantity */}
+          {product.stock > 0 && (
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-gray-400">Quantity:</span>
+              <div className="flex items-center border border-white/10 rounded-xl overflow-hidden">
+                <button
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="px-4 py-2 hover:bg-white/10 transition-colors text-gray-400 hover:text-white"
+                >
+                  -
+                </button>
+                <span className="px-5 py-2 border-x border-white/10 font-medium">{quantity}</span>
+                <button
+                  onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
+                  className="px-4 py-2 hover:bg-white/10 transition-colors text-gray-400 hover:text-white"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          )}
+
+          <button
+            onClick={addToCart}
+            disabled={product.stock === 0}
+            className="w-full py-4 bg-gradient-to-r from-cyan-500 to-green-500 text-white rounded-xl font-medium hover:opacity-90 transition-opacity disabled:opacity-30 flex items-center justify-center gap-2 text-lg"
+          >
+            <ShoppingCart className="h-5 w-5" />
+            {addedToCart ? '✓ Added to Cart!' : 'Add to Cart'}
+          </button>
+        </div>
       </div>
     </div>
   );

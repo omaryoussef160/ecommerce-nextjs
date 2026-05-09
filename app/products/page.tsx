@@ -1,9 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { Search, SlidersHorizontal } from 'lucide-react';
 
 interface Product {
   _id: string;
@@ -50,34 +49,47 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Products</h1>
+        <span className="text-gray-400 text-sm">{products.length} items</span>
       </div>
 
       {/* Search & Filter */}
       <form onSubmit={handleSearch} className="flex gap-3 flex-wrap">
-        <Input
-          placeholder="Search products..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="max-w-xs"
-        />
-        <Input
-          placeholder="Min Price"
-          type="number"
-          value={minPrice}
-          onChange={(e) => setMinPrice(e.target.value)}
-          className="w-28"
-        />
-        <Input
-          placeholder="Max Price"
-          type="number"
-          value={maxPrice}
-          onChange={(e) => setMaxPrice(e.target.value)}
-          className="w-28"
-        />
-        <Button type="submit">Search</Button>
+        <div className="relative flex-1 min-w-[200px]">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+          <input
+            placeholder="Search products..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500/50 transition-colors"
+          />
+        </div>
+        <div className="flex gap-2 items-center">
+          <SlidersHorizontal className="h-4 w-4 text-gray-500" />
+          <input
+            placeholder="Min $"
+            type="number"
+            value={minPrice}
+            onChange={(e) => setMinPrice(e.target.value)}
+            className="w-24 bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500/50 transition-colors"
+          />
+          <span className="text-gray-500">-</span>
+          <input
+            placeholder="Max $"
+            type="number"
+            value={maxPrice}
+            onChange={(e) => setMaxPrice(e.target.value)}
+            className="w-24 bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500/50 transition-colors"
+          />
+        </div>
+        <button
+          type="submit"
+          className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-green-500 text-white rounded-xl font-medium hover:opacity-90 transition-opacity text-sm"
+        >
+          Search
+        </button>
       </form>
 
       {/* Categories */}
@@ -86,10 +98,10 @@ export default function ProductsPage() {
           <button
             key={cat}
             onClick={() => setCategory(cat)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
               category === cat
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-gradient-to-r from-cyan-500 to-green-500 text-white'
+                : 'bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10'
             }`}
           >
             {cat}
@@ -101,11 +113,11 @@ export default function ProductsPage() {
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {[...Array(8)].map((_, i) => (
-            <div key={i} className="bg-gray-100 rounded-xl h-64 animate-pulse" />
+            <div key={i} className="bg-white/5 rounded-2xl h-72 animate-pulse" />
           ))}
         </div>
       ) : products.length === 0 ? (
-        <div className="text-center py-20 text-gray-500">
+        <div className="text-center py-24 text-gray-400">
           <p className="text-xl">No products found</p>
           <p className="text-sm mt-2">Try changing your search or filters</p>
         </div>
@@ -113,8 +125,8 @@ export default function ProductsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {products.map((product) => (
             <Link href={`/products/${product._id}`} key={product._id}>
-              <div className="bg-white rounded-xl border shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-                <div className="h-48 bg-gray-100 flex items-center justify-center">
+              <div className="glass-card rounded-2xl overflow-hidden hover:border-cyan-500/30 transition-all hover:-translate-y-1 duration-200">
+                <div className="h-48 bg-white/5 flex items-center justify-center overflow-hidden">
                   {product.images[0] ? (
                     <img
                       src={product.images[0]}
@@ -126,17 +138,17 @@ export default function ProductsPage() {
                   )}
                 </div>
                 <div className="p-4">
-                  <span className="text-xs text-blue-600 font-medium bg-blue-50 px-2 py-1 rounded-full">
+                  <span className="text-xs text-cyan-400 font-medium bg-cyan-500/10 px-2 py-1 rounded-full">
                     {product.category}
                   </span>
                   <h3 className="font-semibold mt-2 truncate">{product.name}</h3>
-                  <p className="text-gray-500 text-sm truncate">{product.description}</p>
+                  <p className="text-gray-500 text-sm truncate mt-1">{product.description}</p>
                   <div className="flex justify-between items-center mt-3">
-                    <span className="text-lg font-bold text-blue-600">
+                    <span className="text-lg font-bold text-cyan-400">
                       ${product.price}
                     </span>
-                    <span className="text-xs text-gray-400">
-                      Stock: {product.stock}
+                    <span className={`text-xs ${product.stock > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                      {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
                     </span>
                   </div>
                 </div>
